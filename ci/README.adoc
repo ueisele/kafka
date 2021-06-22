@@ -22,3 +22,8 @@ You can run tests:
 ----
 ./ci/do_in_docker 11-tls1.1 ./gradlew clients:unitTest --tests SslTransportLayerTest.testUnsupportedTLSVersion --rerun-tasks
 ----
+
+Jira Tickets related to TLSv1.1 issues:
+
+* https://issues.apache.org/jira/browse/KAFKA-12786
+* https://issues.apache.org/jira/browse/KAFKA-12790
