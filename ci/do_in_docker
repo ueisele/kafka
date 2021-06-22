@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+SCRIPT_DIR=$(dirname ${BASH_SOURCE[0]})
+
+function do_in_docker () {
+  docker-compose -f "${SCRIPT_DIR}/docker-compose.yaml" run --rm "$@"
+}
+
+do_in_docker "$@"
