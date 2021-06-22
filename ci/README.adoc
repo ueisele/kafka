@@ -6,21 +6,21 @@ The following environments are at the moment supported:
 
 * 11.0.10: JDK 11.0.10
 * 11.0.11: JDK 11.0.11
-* 11.0.11-tls1.1: JDK 11.0.11 with TLSv1.1
+* 11.0.11-tls1: JDK 11.0.11 with TLSv1 and TLSv1.1 support
 * 11: JDK 11 latest
-* 11-tls1.1: JDK 11 latest with TLSv1.1
+* 11-tls1: JDK 11 latest with TLSv1 and TLSv1.1 support
 
-As of JDK 11.0.11, TLSv1.1 is disabled by default (see https://bugs.openjdk.java.net/browse/JDK-8256490).
+As of JDK 11.0.11, TLSv1 and TLSv1.1 are disabled by default (see https://bugs.openjdk.java.net/browse/JDK-8256490).
 TLSv1.1 can be re-enabled by removing "TLSv1.1" from the `jdk.tls.disabledAlgorithms` security property in the `java.security` configuration file.
-This has been done in the environments `11.0.11-tls1.1` and `11-tls1.1`.
+This has been done in the environments `11.0.11-tls1` and `11-tls1`.
 
-In order to build Kafka you need the environments `11.0.10`, `11.0.11-tls1.1` or `11-tls1.1`. As of 11.0.11 tests with TLSv1.1 like `SslTransportLayerTest.testUnsupportedTLSVersion` will fail.
+In order to build Kafka you need the environments `11.0.10`, `11.0.11-tls1` or `11-tls1`. As of 11.0.11 tests which require TLSv1 or TLSv1.1 like `SslTransportLayerTest.testUnsupportedTLSVersion` will fail.
 
 You can run tests:
 
 [source,bash]
 ----
-./ci/do_in_docker 11-tls1.1 ./gradlew clients:unitTest --tests SslTransportLayerTest.testUnsupportedTLSVersion --rerun-tasks
+./ci/do_in_docker 11-tls1 ./gradlew clients:unitTest --tests SslTransportLayerTest.testUnsupportedTLSVersion --rerun-tasks
 ----
 
 Jira Tickets related to TLSv1.1 issues:

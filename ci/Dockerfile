@@ -23,12 +23,12 @@ RUN dnf -y install ${ZULU_OPENJDK_PACKAGE}$([[ -n "${ZULU_OPENJDK_MINOR}" ]] && 
     && dnf clean all \
     && rm -rf /tmp/*
 
-# 7u301, 8u291, 11.0.11, 16 disabled TLSv1.1 by default
+# 7u301, 8u291, 11.0.11, 16 disabled TLSv1 and TLSv1.1 by default
 # https://bugs.openjdk.java.net/browse/JDK-8256490
-ARG REMOVE_TLS1_1_FROM_DISABLED_ALGORITHMS
-RUN if [[ "${REMOVE_TLS1_1_FROM_DISABLED_ALGORITHMS}" == "true" ]]; then \
-        sed -i 's/^\(jdk.tls.disabledAlgorithms=\)\(.*\)TLSv1.1,\(.*\)$/\1\2\3/' ${JAVA_HOME}/conf/security/java.security; \
-    fi
+ARG REMOVE_FROM_DISABLED_ALGORITHMS
+RUN for alg in $(echo $REMOVE_FROM_DISABLED_ALGORITHMS | sed "s/,/ /g"); do \
+        sed -i "s/^\(jdk.tls.disabledAlgorithms=\)\(.*\)${alg},\(.*\)$/\1\2\3/" ${JAVA_HOME}/conf/security/java.security; \
+    done
 
 USER appuser
 

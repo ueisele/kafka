@@ -26,14 +26,14 @@ services:
       - gradle:/home/appuser/.gradle
     tty: true
 
-  "11.0.11-tls1.1":
-    image: kafka-builder:11.0.11-tls11
+  "11.0.11-tls1":
+    image: kafka-builder:11.0.11-tls1
     build:
       context: .
       args:
         ZULU_OPENJDK_MAJOR: 11
         ZULU_OPENJDK_MINOR: 0.11-1
-        REMOVE_TLS1_1_FROM_DISABLED_ALGORITHMS: "true"
+        REMOVE_FROM_DISABLED_ALGORITHMS: "TLSv1,TLSv1.1"
     volumes:
       - ../:/home/appuser/kafka
       - gradle:/home/appuser/.gradle
@@ -50,13 +50,13 @@ services:
       - gradle:/home/appuser/.gradle
     tty: true
 
-  "11-tls1.1":
-    image: kafka-builder:11-tls11
+  "11-tls1":
+    image: kafka-builder:11-tls1
     build:
       context: .
       args:
         ZULU_OPENJDK_MAJOR: 11
-        REMOVE_TLS1_1_FROM_DISABLED_ALGORITHMS: "true"
+        REMOVE_FROM_DISABLED_ALGORITHMS: "TLSv1,TLSv1.1"
     volumes:
       - ../:/home/appuser/kafka
       - gradle:/home/appuser/.gradle
