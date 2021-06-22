@@ -1,0 +1,18 @@
+---
+version: '2.4'
+services:
+
+  "11":
+    image: kafka-builder:11-tls1
+    build:
+      context: .
+      args:
+        ZULU_OPENJDK_MAJOR: 11
+        REMOVE_FROM_DISABLED_ALGORITHMS: TLSv1,TLSv1.1
+    volumes:
+      - ../:/home/appuser/kafka
+      - gradle:/home/appuser/.gradle
+    tty: true
+
+volumes:
+  gradle:

@@ -1,0 +1,14 @@
+= Kafka Docker Build Environment
+
+.Build
+[source,bash]
+----
+./ci/do_in_docker 11 ./gradlew clean jar
+----
+
+.Test
+[source,bash]
+----
+./ci/do_in_docker 11 ./gradlew unitTest
+./ci/do_in_docker 11 ./gradlew integrationTest
+----
