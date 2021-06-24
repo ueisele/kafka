@@ -1,0 +1,47 @@
+= KRaft Kafka Cluster and Envoy Proxy
+
+The envoy proxy listens on ports 909[1-3] and forwards to the corresponding Kafka Broker [1-3] to port 19092. The Kafka Brokers are listening on port 19092. As advertised listener the envoy proxy hostname and the corresponding port (909[1-3]) is configured.
+
+----
+Client -- 909[1-3] --> Envoy Proxy -- 19092 --> Kafka Broker [1-3]
+----
+
+|===
+| Envoy Host | Envoy Port | Kafka Broker | Kafka Port | Advertised Listener
+
+| envoy-kafka-broker | 9091 | kafka-broker1 | 19092 | envoy-kafka-broker:9091
+| envoy-kafka-broker | 9092 | kafka-broker2 | 19092 | envoy-kafka-broker:9092
+| envoy-kafka-broker | 9093 | kafka-broker3 | 19092 | envoy-kafka-broker:9093
+|===
+
+.Run Envoy, Kafka Controllers and Kafka Brokers
+[source,bash]
+----
+docker-compose up -d
+----
+
+.List advertised brokers
+[source,bash]
+----
+docker-compose exec kafkacat kafkacat -b envoy-kafka-broker:9091 -L
+----
+
+.Actual advertised brokers
+----
+Metadata for all topics (from broker -1: envoy-kafka-broker:9091/bootstrap):
+ 3 brokers:
+  broker 101 at envoy-kafka-broker:19092
+  broker 102 at envoy-kafka-broker:19092 (controller)
+  broker 103 at envoy-kafka-broker:19092
+ 0 topics:
+----
+
+.Expected advertised brokers
+----
+Metadata for all topics (from broker -1: kafka:9092/bootstrap):
+ 3 brokers:
+  broker 101 at envoy-kafka-broker:9091
+  broker 102 at envoy-kafka-broker:9092 (controller)
+  broker 103 at envoy-kafka-broker:9093
+ 0 topics:
+----
