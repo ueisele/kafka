@@ -2,12 +2,52 @@
 version: '2.4'
 services:
 
+  "16":
+    image: kafka-builder:16.0.1-tls1
+    build:
+      context: .
+      args:
+        ZULU_OPENJDK_MAJOR: 16
+        ZULU_OPENJDK_MINOR: 0.1-1
+        REMOVE_FROM_DISABLED_ALGORITHMS: TLSv1,TLSv1.1
+    volumes:
+      - ../:/home/appuser/kafka
+      - gradle:/home/appuser/.gradle
+    tty: true
+
+  "15":
+    image: kafka-builder:15.0.3-tls1
+    build:
+      context: .
+      args:
+        ZULU_OPENJDK_MAJOR: 15
+        ZULU_OPENJDK_MINOR: 0.3-1
+        REMOVE_FROM_DISABLED_ALGORITHMS: TLSv1,TLSv1.1
+    volumes:
+      - ../:/home/appuser/kafka
+      - gradle:/home/appuser/.gradle
+    tty: true
+
   "11":
-    image: kafka-builder:11-tls1
+    image: kafka-builder:11.0.11-tls1
     build:
       context: .
       args:
         ZULU_OPENJDK_MAJOR: 11
+        ZULU_OPENJDK_MINOR: 0.11-1
+        REMOVE_FROM_DISABLED_ALGORITHMS: TLSv1,TLSv1.1
+    volumes:
+      - ../:/home/appuser/kafka
+      - gradle:/home/appuser/.gradle
+    tty: true
+
+  "8":
+    image: kafka-builder:8.0.292-tls1
+    build:
+      context: .
+      args:
+        ZULU_OPENJDK_MAJOR: 8
+        ZULU_OPENJDK_MINOR: 0.292-1
         REMOVE_FROM_DISABLED_ALGORITHMS: TLSv1,TLSv1.1
     volumes:
       - ../:/home/appuser/kafka

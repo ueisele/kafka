@@ -27,7 +27,8 @@ RUN dnf -y install ${ZULU_OPENJDK_PACKAGE}$([[ -n "${ZULU_OPENJDK_MINOR}" ]] && 
 # https://bugs.openjdk.java.net/browse/JDK-8256490
 ARG REMOVE_FROM_DISABLED_ALGORITHMS
 RUN for alg in $(echo $REMOVE_FROM_DISABLED_ALGORITHMS | sed "s/,/ /g"); do \
-        sed -i "s/^\(jdk.tls.disabledAlgorithms=\)\(.*\)${alg},\(.*\)$/\1\2\3/" ${JAVA_HOME}/conf/security/java.security; \
+        security_file=$([[ -e ${JAVA_HOME}/conf/security/java.security ]] && echo ${JAVA_HOME}/conf/security/java.security || echo ${JAVA_HOME}/jre/lib/security/java.security); \
+        sed -i "s/^\(jdk.tls.disabledAlgorithms=\)\(.*\)${alg},\(.*\)$/\1\2\3/" ${security_file}; \
     done
 
 USER appuser

@@ -1,5 +1,7 @@
 = Kafka Docker Build Environment
 
+== Quick Start
+
 .Build
 [source,bash]
 ----
@@ -11,4 +13,20 @@
 ----
 ./ci/do_in_docker 11 ./gradlew unitTest
 ./ci/do_in_docker 11 ./gradlew integrationTest
+----
+
+== Kafka PR Builder
+
+.JDK 8 and Scala 2.12
+[source,bash]
+----
+./ci/do_in_docker 8 ./gradlew -PscalaVersion=2.12 clean compileJava compileScala compileTestJava compileTestScala spotlessScalaCheck checkstyleMain checkstyleTest spotbugsMain rat --profile --no-daemon --continue -PxmlSpotBugsReport=true
+./ci/do_in_docker 8 ./gradlew -PscalaVersion=2.12 unitTest integrationTest --profile --no-daemon --continue -PtestLoggingEvents=started,passed,skipped,failed -PignoreFailures=true -PmaxParallelForks=2 -PmaxTestRetries=1 -PmaxTestRetryFailures=5
+----
+
+.JDK 11 and Scala 2.13
+[source,bash]
+----
+./ci/do_in_docker 11 ./gradlew -PscalaVersion=2.13 clean compileJava compileScala compileTestJava compileTestScala spotlessScalaCheck checkstyleMain checkstyleTest spotbugsMain rat --profile --no-daemon --continue -PxmlSpotBugsReport=true
+./ci/do_in_docker 11 ./gradlew -PscalaVersion=2.13 unitTest integrationTest --profile --no-daemon --continue -PtestLoggingEvents=started,passed,skipped,failed -PignoreFailures=true -PmaxParallelForks=2 -PmaxTestRetries=1 -PmaxTestRetryFailures=5
 ----
