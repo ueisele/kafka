@@ -48,10 +48,10 @@ import java.util.Objects;
  * for versioned key-value stores.
  */
 public class VersionedKeyValueToBytesStoreAdapter implements VersionedBytesStore {
-    private static final Serde<ValueAndTimestamp<byte[]>> VALUE_AND_TIMESTAMP_SERDE
-        = new ValueAndTimestampSerde<>(new ByteArraySerde());
-    private static final Serializer<ValueAndTimestamp<byte[]>> VALUE_AND_TIMESTAMP_SERIALIZER
-        = VALUE_AND_TIMESTAMP_SERDE.serializer();
+    private static final Serde<VersionedRecord<byte[]>> VERSIONED_RECORD_SERDE
+        = new VersionedRecordSerde<>(new ByteArraySerde());
+    private static final Serializer<VersionedRecord<byte[]>> VERSIONED_RECORD_SERIALIZER
+        = VERSIONED_RECORD_SERDE.serializer();
 
     final VersionedKeyValueStore<Bytes, byte[]> inner;
 
@@ -173,11 +173,6 @@ public class VersionedKeyValueToBytesStoreAdapter implements VersionedBytesStore
     }
 
     private static byte[] serializeAsBytes(final VersionedRecord<byte[]> versionedRecord) {
-        if (versionedRecord == null) {
-            return null;
-        }
-        return VALUE_AND_TIMESTAMP_SERIALIZER.serialize(
-            null,
-            ValueAndTimestamp.make(versionedRecord.value(), versionedRecord.timestamp()));
+        return VERSIONED_RECORD_SERIALIZER.serialize(null, versionedRecord);
     }
 }

@@ -95,7 +95,7 @@ public class MeteredVersionedKeyValueStore<K, V>
      * this class are to match the interface of {@link VersionedKeyValueStore}.
      */
     private class MeteredVersionedKeyValueStoreInternal
-        extends MeteredKeyValueStore<K, ValueAndTimestamp<V>> {
+        extends MeteredKeyValueStore<K, VersionedRecord<V>> {
 
         private final VersionedBytesStore inner;
         private final Serde<V> plainValueSerde;
@@ -133,7 +133,7 @@ public class MeteredVersionedKeyValueStore<K, V>
                 keySerde,
                 valueSerde == null
                     ? null
-                    : new ValueAndTimestampSerde<>(valueSerde)
+                    : new VersionedRecordSerde<>(valueSerde)
             );
             this.inner = inner;
             this.plainValueSerde = valueSerde;
@@ -151,7 +151,7 @@ public class MeteredVersionedKeyValueStore<K, V>
             }
         }
 
-        public ValueAndTimestamp<V> get(final K key, final long asOfTimestamp) {
+        public VersionedRecord<V> get(final K key, final long asOfTimestamp) {
             Objects.requireNonNull(key, "key cannot be null");
             try {
                 return maybeMeasureLatency(() -> outerValue(inner.get(keyBytes(key), asOfTimestamp)), time, getSensor);
@@ -161,7 +161,7 @@ public class MeteredVersionedKeyValueStore<K, V>
             }
         }
 
-        public ValueAndTimestamp<V> delete(final K key, final long timestamp) {
+        public VersionedRecord<V> delete(final K key, final long timestamp) {
             Objects.requireNonNull(key, "key cannot be null");
             try {
                 return maybeMeasureLatency(() -> outerValue(inner.delete(keyBytes(key), timestamp)), time, deleteSensor);
@@ -284,12 +284,12 @@ public class MeteredVersionedKeyValueStore<K, V>
 
         @SuppressWarnings("unchecked")
         @Override
-        protected Serde<ValueAndTimestamp<V>> prepareValueSerdeForStore(
-            final Serde<ValueAndTimestamp<V>> valueSerde,
+        protected Serde<VersionedRecord<V>> prepareValueSerdeForStore(
+            final Serde<VersionedRecord<V>> valueSerde,
             final SerdeGetter getter
         ) {
             if (valueSerde == null) {
-                return new ValueAndTimestampSerde<>((Serde<V>) getter.valueSerde());
+                return new VersionedRecordSerde<>((Serde<V>) getter.valueSerde());
             } else {
                 return super.prepareValueSerdeForStore(valueSerde, getter);
             }
@@ -314,26 +314,17 @@ public class MeteredVersionedKeyValueStore<K, V>
 
     @Override
     public VersionedRecord<V> delete(final K key, final long timestamp) {
-        final ValueAndTimestamp<V> valueAndTimestamp = internal.delete(key, timestamp);
-        return valueAndTimestamp == null
-            ? null
-            : new VersionedRecord<>(valueAndTimestamp.value(), valueAndTimestamp.timestamp());
+        return internal.delete(key, timestamp);
     }
 
     @Override
     public VersionedRecord<V> get(final K key) {
-        final ValueAndTimestamp<V> valueAndTimestamp = internal.get(key);
-        return valueAndTimestamp == null
-            ? null
-            : new VersionedRecord<>(valueAndTimestamp.value(), valueAndTimestamp.timestamp());
+        return internal.get(key);
     }
 
     @Override
     public VersionedRecord<V> get(final K key, final long asOfTimestamp) {
-        final ValueAndTimestamp<V> valueAndTimestamp = internal.get(key, asOfTimestamp);
-        return valueAndTimestamp == null
-            ? null
-            : new VersionedRecord<>(valueAndTimestamp.value(), valueAndTimestamp.timestamp());
+        return internal.get(key, asOfTimestamp);
     }
 
     @Override
